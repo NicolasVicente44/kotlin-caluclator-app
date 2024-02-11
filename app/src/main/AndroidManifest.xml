@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.COMP3025W24Assignment2CalculatorAppInterface"
+        android:theme="@style/Theme.COMP3025W24Assignment2CalculatorApp"
         tools:targetApi="31">
 
         <activity

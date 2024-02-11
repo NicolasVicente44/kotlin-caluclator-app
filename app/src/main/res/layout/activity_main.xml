@@ -187,7 +187,7 @@
         >
 
         <Button
-            android:id="@+id/multiplicatonButton"
+            android:id="@+id/multiplicationButton"
             style="@style/CalculatorButtons"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -301,7 +301,7 @@
             android:tag="3"
             android:text="@string/three"
             android:textColor="@color/number_and_utility_button_colors" />
-    </LinearLayout>d
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/row5"

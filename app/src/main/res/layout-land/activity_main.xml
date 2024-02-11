@@ -170,7 +170,7 @@
                 android:textColor="@color/number_and_utility_button_colors" />
 
             <Button
-                android:id="@+id/multiplicatonButton"
+                android:id="@+id/multiplicationButton"
                 style="@style/CalculatorButtons"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
