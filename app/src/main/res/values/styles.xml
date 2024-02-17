@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CalculatorButtons" parent="Widget.Material3.Button">
+    <style name="CalculatorButtons" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="fontFamily">@font/fa_solid_900</item>
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="OutputLabel" parent="Widget.Material3.Button">
+    <style name="OutputLabel" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="fontFamily">@font/fa_solid_900</item>
         <item name="android:textSize">40sp</item>
     </style>
