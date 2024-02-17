@@ -69,12 +69,16 @@ class Calculator(binding: ActivityMainBinding)
         {
             // compute the result based ont the last operator selected
             when(this.m_active_operation) {
-                "multiply" -> {
-
+                "×" -> {
+                    this.m_lhs = multiply(this.m_lhs, this.m_resultLabelValue)
+                    this.m_resultLabelValue = ""
+                    this.m_binding.resultLabel.text = this.m_lhs;
                 }
 
-                "divide" -> {
-
+                "÷" -> {
+                    this.m_lhs = divide(this.m_lhs, this.m_resultLabelValue)
+                    this.m_resultLabelValue = ""
+                    this.m_binding.resultLabel.text = this.m_lhs;
                 }
 
                 "+" -> {
@@ -232,5 +236,65 @@ class Calculator(binding: ActivityMainBinding)
         return (LHS.toInt() + RHS.toInt()).toString()
     }
 
+
+
+    /**
+     * This function multiplies the lhs to the rhs and returns a string representation of the result
+     *
+     * @param lhs [String]
+     * @param rhs [String]
+     * @return [String]
+     */
+    private fun multiply(lhs: String, rhs: String): String
+    {
+        var LHS = lhs
+        var RHS = rhs
+
+        if(LHS.isEmpty())
+        {
+            LHS = "0"
+        }
+
+        if(RHS.isEmpty())
+        {
+            RHS = "0"
+        }
+
+        if(LHS.contains(".") || RHS.contains("."))
+        {
+            return (LHS.toFloat() * RHS.toFloat()).toString()
+        }
+        return (LHS.toInt() * RHS.toInt()).toString()
+    }
+
+
+    /**
+     * This function divides the lhs to the rhs and returns a string representation of the result
+     *
+     * @param lhs [String]
+     * @param rhs [String]
+     * @return [String]
+     */
+    private fun divide(lhs: String, rhs: String): String
+    {
+        var LHS = lhs
+        var RHS = rhs
+
+        if(LHS.isEmpty())
+        {
+            LHS = "0"
+        }
+
+        if(RHS.isEmpty())
+        {
+            RHS = "0"
+        }
+
+        if(LHS.contains(".") || RHS.contains("."))
+        {
+            return (LHS.toFloat() / RHS.toFloat()).toString()
+        }
+        return (LHS.toInt() / RHS.toInt()).toString()
+    }
 
 }
