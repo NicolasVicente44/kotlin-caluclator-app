@@ -53,55 +53,75 @@ class Calculator(binding: ActivityMainBinding)
 
     }
 
-    private fun processOperatorButtons(view: View)
-    {
-        if(m_lhs.isEmpty() && this.m_resultLabelValue.isNotEmpty())
-        {
-            this.m_lhs = this.m_resultLabelValue
-            this.m_resultLabelValue = ""
-            this.m_active_operation = view.tag.toString()
-        }
-        else if(this.m_lhs.isNotEmpty() && this.m_resultLabelValue.isEmpty())
-        {
-            this.m_active_operation = view.tag.toString()
-        }
-        else if(this.m_lhs.isNotEmpty() && this.m_resultLabelValue.isNotEmpty())
-        {
-            // compute the result based ont the last operator selected
-            when(this.m_active_operation) {
+    private fun processEqualsButton() {
+        if (m_lhs.isNotEmpty() && m_resultLabelValue.isNotEmpty()) {
+            // perform calculation based on the last operator selected
+            when (m_active_operation) {
                 "×" -> {
-                    this.m_lhs = multiply(this.m_lhs, this.m_resultLabelValue)
-                    this.m_resultLabelValue = ""
-                    this.m_binding.resultLabel.text = this.m_lhs;
+                    m_lhs = multiply(m_lhs, m_resultLabelValue)
                 }
-
                 "÷" -> {
-                    this.m_lhs = divide(this.m_lhs, this.m_resultLabelValue)
-                    this.m_resultLabelValue = ""
-                    this.m_binding.resultLabel.text = this.m_lhs;
+                    if (m_resultLabelValue != "0") {
+                        m_lhs = divide(m_lhs, m_resultLabelValue)
+                    } else {
+                        // handle division by zero error
+                        m_lhs = "/ Err"
+                    }
                 }
-
                 "+" -> {
-                    this.m_lhs = add(this.m_lhs, this.m_resultLabelValue)
-                    this.m_resultLabelValue = ""
-                    this.m_binding.resultLabel.text = this.m_lhs;
+                    m_lhs = add(m_lhs, m_resultLabelValue)
                 }
-
                 "-" -> {
-                    this.m_lhs = subtract(this.m_lhs, this.m_resultLabelValue)
-                    this.m_resultLabelValue = ""
-                    this.m_binding.resultLabel.text = this.m_lhs;
+                    m_lhs = subtract(m_lhs, m_resultLabelValue)
                 }
-
-                "equals" -> {
-
+                "%" -> {
+                    m_lhs = calculatePercent(m_lhs, m_resultLabelValue)
                 }
             }
-            // update the last operation
-            this.m_active_operation = view.tag.toString()
+            // Update the result label
+            m_binding.resultLabel.text = m_lhs
+            // Clear the result label value
+            m_resultLabelValue = ""
+            // Reset the active operation
+            m_active_operation = "equals"
         }
-
     }
+
+    /**
+     * Processes the operator buttons when clicked.
+     * @param view The clicked view.
+     */
+    private fun processOperatorButtons(view: View) {
+        when (view.tag.toString()) {
+            // if the clicked operator is multiplication, division, addition, or subtraction
+            "×", "÷", "+", "-", "%" -> {
+                if (m_lhs.isEmpty() && m_resultLabelValue.isNotEmpty()) {
+                    // if the left-hand side is empty and result label has a value,
+                    // set the left-hand side to the result label value,
+                    // clear the result label value, and set the active operation.
+                    m_lhs = m_resultLabelValue
+                    m_resultLabelValue = ""
+                    m_active_operation = view.tag.toString()
+                } else if (m_lhs.isNotEmpty() && m_resultLabelValue.isEmpty()) {
+                    // if the left-hand side has a value and result label is empty,
+                    // update the active operation.
+                    m_active_operation = view.tag.toString()
+                } else if (m_lhs.isNotEmpty() && m_resultLabelValue.isNotEmpty()) {
+                    // if both left-hand side and result label have values,
+                    // calculate the result based on the last operator selected,
+                    // and update the active operation.
+                    processEqualsButton()
+                    m_active_operation = view.tag.toString()
+                }
+            }
+            // If the clicked operator is equals
+            "equals" -> {
+                // Process equals button
+                processEqualsButton()
+            }
+        }
+    }
+
 
     private fun processExtraButtons(view: View)
     {
@@ -124,17 +144,23 @@ class Calculator(binding: ActivityMainBinding)
             }
             "+-" ->
             {
-                if(this.m_resultLabelValue.isNotEmpty())
-                {
-                    if(this.m_resultLabelValue.contains("-"))
-                    {
-                        this.m_resultLabelValue = this.m_resultLabelValue.removePrefix("-")
+                // toggle sign functionality
+                if (m_lhs.isEmpty() && m_resultLabelValue.isNotEmpty()) {
+                    // toggle sign of the result label value
+                    m_resultLabelValue = if (m_resultLabelValue.startsWith("-")) {
+                        m_resultLabelValue.removePrefix("-")
+                    } else {
+                        "-$m_resultLabelValue"
                     }
-                    else
-                    {
-                        this.m_resultLabelValue = "-" + this.m_resultLabelValue
+                    m_binding.resultLabel.text = m_resultLabelValue
+                } else if (m_lhs.isNotEmpty() && m_resultLabelValue.isEmpty()) {
+                    // toggle sign of the left-hand side value
+                    m_lhs = if (m_lhs.startsWith("-")) {
+                        m_lhs.removePrefix("-")
+                    } else {
+                        "-$m_lhs"
                     }
-                    this.m_binding.resultLabel.text = this.m_resultLabelValue
+                    m_binding.resultLabel.text = m_lhs
                 }
             }
         }
@@ -296,5 +322,29 @@ class Calculator(binding: ActivityMainBinding)
         }
         return (LHS.toInt() / RHS.toInt()).toString()
     }
+
+
+    private fun calculatePercent(lhs: String, rhs: String): String {
+        var LHS = lhs
+        var RHS = rhs
+
+        // Division by zero handler
+        if (RHS == "0") {
+            return "Err"
+        }
+
+        if (LHS.isEmpty()) {
+            LHS = "0"
+        }
+
+        if (RHS.isEmpty()) {
+            RHS = "0"
+        }
+
+        // Calculate the percentage
+        return ((LHS.toFloat() / RHS.toFloat()) * 100).toString()
+    }
+
+
 
 }
