@@ -54,8 +54,8 @@ class Calculator(binding: ActivityMainBinding)
     }
 
     private fun processEqualsButton() {
-        if (m_lhs.isNotEmpty() && m_resultLabelValue.isNotEmpty()) {
-            // perform calculation based on the last operator selected
+        if (m_lhs.isNotEmpty() && m_resultLabelValue.isNotEmpty() && m_active_operation.isNotEmpty()) {
+            // Perform calculation based on the last operator selected
             when (m_active_operation) {
                 "×" -> {
                     m_lhs = multiply(m_lhs, m_resultLabelValue)
@@ -65,7 +65,7 @@ class Calculator(binding: ActivityMainBinding)
                         m_lhs = divide(m_lhs, m_resultLabelValue)
                     } else {
                         // handle division by zero error
-                        m_lhs = "/ Err"
+                        m_lhs = "Err"
                     }
                 }
                 "+" -> {
@@ -75,15 +75,11 @@ class Calculator(binding: ActivityMainBinding)
                     m_lhs = subtract(m_lhs, m_resultLabelValue)
                 }
                 "%" -> {
-                    m_lhs = calculatePercent(m_lhs, m_resultLabelValue)
+                    m_lhs = calculatePercent(m_lhs, m_resultLabelValue, m_active_operation)
                 }
             }
             // Update the result label
             m_binding.resultLabel.text = m_lhs
-            // Clear the result label value
-            m_resultLabelValue = ""
-            // Reset the active operation
-            m_active_operation = "equals"
         }
     }
 
@@ -94,7 +90,7 @@ class Calculator(binding: ActivityMainBinding)
     private fun processOperatorButtons(view: View) {
         when (view.tag.toString()) {
             // if the clicked operator is multiplication, division, addition, or subtraction
-            "×", "÷", "+", "-", "%" -> {
+            "×", "÷", "+", "-" -> {
                 if (m_lhs.isEmpty() && m_resultLabelValue.isNotEmpty()) {
                     // if the left-hand side is empty and result label has a value,
                     // set the left-hand side to the result label value,
@@ -112,6 +108,16 @@ class Calculator(binding: ActivityMainBinding)
                     // and update the active operation.
                     processEqualsButton()
                     m_active_operation = view.tag.toString()
+                }
+            }
+            "%" -> {
+                if (m_lhs.isNotEmpty() && m_resultLabelValue.isNotEmpty()) {
+                    // Calculate percentage based on the previous operator
+                    m_resultLabelValue =
+                        calculatePercent(m_lhs, m_resultLabelValue, m_active_operation)
+                    m_lhs = ""
+                    m_active_operation = ""
+                    m_binding.resultLabel.text = m_resultLabelValue
                 }
             }
             // If the clicked operator is equals
@@ -144,23 +150,15 @@ class Calculator(binding: ActivityMainBinding)
             }
             "+-" ->
             {
-                // toggle sign functionality
-                if (m_lhs.isEmpty() && m_resultLabelValue.isNotEmpty()) {
-                    // toggle sign of the result label value
+                // Handle plus-minus button
+                if (m_resultLabelValue.isNotEmpty() && m_binding.resultLabel.text != "0") {
+                    // Toggle sign of the result label value
                     m_resultLabelValue = if (m_resultLabelValue.startsWith("-")) {
-                        m_resultLabelValue.removePrefix("-")
+                        m_resultLabelValue.substring(1)
                     } else {
                         "-$m_resultLabelValue"
                     }
                     m_binding.resultLabel.text = m_resultLabelValue
-                } else if (m_lhs.isNotEmpty() && m_resultLabelValue.isEmpty()) {
-                    // toggle sign of the left-hand side value
-                    m_lhs = if (m_lhs.startsWith("-")) {
-                        m_lhs.removePrefix("-")
-                    } else {
-                        "-$m_lhs"
-                    }
-                    m_binding.resultLabel.text = m_lhs
                 }
             }
         }
@@ -324,27 +322,19 @@ class Calculator(binding: ActivityMainBinding)
     }
 
 
-    private fun calculatePercent(lhs: String, rhs: String): String {
-        var LHS = lhs
-        var RHS = rhs
 
-        // Division by zero handler
-        if (RHS == "0") {
-            return "Err"
+    private fun calculatePercent(lhs: String, rhs: String, operation: String): String {
+        val value = lhs.toFloatOrNull() ?: return "Err"
+        val percent = rhs.toFloatOrNull() ?: return "Err"
+
+        // perform calculation based on the previous operator
+        return when (operation) {
+            "+" -> (value + value * percent / 100).toString()
+            "-" -> (value - value * percent / 100).toString()
+            "×" -> (value * (1 + percent / 100)).toString()
+            "÷" -> if (percent != 0f) (value / (1 + percent / 100)).toString() else "Err"
+            else -> "Err"
         }
-
-        if (LHS.isEmpty()) {
-            LHS = "0"
-        }
-
-        if (RHS.isEmpty()) {
-            RHS = "0"
-        }
-
-        // Calculate the percentage
-        return ((LHS.toFloat() / RHS.toFloat()) * 100).toString()
     }
-
-
 
 }
