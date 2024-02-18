@@ -6,6 +6,7 @@
 //This is the functional version of the calculator app, building upon the ui of the first assignment.
 //The program utilizes a calculator class independent of the main activity file to handle various calculations and on click listeners
 //The main activity file then instantiates an instance of the calculator and uses view binding to link it to the UI form the activity main layout file
+//The calculator was created through iterative changes starting from the ui, then moving to mapping ui elements to a calculator class, then creating functions for calculation
 
 
 package ca.georgiancollege.comp3025_w24_assignment2_calculator_app
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import ca.georgiancollege.comp3025_w24_assignment2_calculator_app.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
+    //set view binding
     private lateinit var binding: ActivityMainBinding
     private lateinit var calculator: Calculator
 
@@ -23,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize the calculator property with a new instance of the Calculator class,
+        // Initialize the calculator object with a new instance of the Calculator class,
         // passing the binding object as a parameter
         calculator = Calculator(binding)
     }

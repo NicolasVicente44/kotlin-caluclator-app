@@ -4,15 +4,24 @@ import android.view.View
 import ca.georgiancollege.comp3025_w24_assignment2_calculator_app.databinding.ActivityMainBinding
 
 
-
-
+/**
+ * The calculator class represents the calculator programmatically and its connection to the UI via the onclick listeners, performing calculations and outputting them to the results view
+ */
 class Calculator(binding: ActivityMainBinding)
 {
+
+    /**
+     * calcualtor class instance variables
+     */
     private var m_resultLabelValue: String
     private var m_binding: ActivityMainBinding
     private var m_lhs: String
     private var m_active_operation: String
 
+
+    /**
+     * instance variable initialization
+     */
     init
     {
         this.m_binding = binding
@@ -23,6 +32,9 @@ class Calculator(binding: ActivityMainBinding)
         initializeOnClickListeners()
     }
 
+    /**
+     * function to map the buttons from the ui to the funcitons associated with their functionality/to set teh onclick listeners for them
+     */
     private fun initializeOnClickListeners() {
 
         //function/utility buttons
@@ -53,6 +65,10 @@ class Calculator(binding: ActivityMainBinding)
 
     }
 
+
+    /**
+     * function to handle what happen when the equals button is pressed based on the current operator, calling the appropriate function associated with that operator
+     */
     private fun processEqualsButton() {
         if (m_lhs.isNotEmpty() && m_resultLabelValue.isNotEmpty() && m_active_operation.isNotEmpty()) {
             // Perform calculation based on the last operator selected
@@ -80,6 +96,7 @@ class Calculator(binding: ActivityMainBinding)
             }
             // Update the result label
             m_binding.resultLabel.text = m_lhs
+            m_resultLabelValue = ""
         }
     }
 
@@ -129,6 +146,9 @@ class Calculator(binding: ActivityMainBinding)
     }
 
 
+    /**
+     * function to handle the extra/utility buttons calling the appropriate functions or performing the correct action based on the button pressed
+     */
     private fun processExtraButtons(view: View)
     {
         when(view.tag.toString())
@@ -164,6 +184,10 @@ class Calculator(binding: ActivityMainBinding)
         }
     }
 
+
+    /**
+     * function to handle the processing of the number buttons being pressed, handles the case in which the button pressed is the decimal button, and prepends a 0 if required
+     */
     private fun processNumberButtons(view: View)
     {
         when (view.tag.toString())
@@ -322,7 +346,9 @@ class Calculator(binding: ActivityMainBinding)
     }
 
 
-
+    /**
+     * percent calculation function that determines how to apply percent based on the operator used within the same expression, ie dividing by a percent or adding a percent
+     */
     private fun calculatePercent(lhs: String, rhs: String, operation: String): String {
         val value = lhs.toFloatOrNull() ?: return "Err"
         val percent = rhs.toFloatOrNull() ?: return "Err"
